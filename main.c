@@ -13,6 +13,43 @@ void display_on_LEDS(uint8_t i);
 void init_switches(void);
 void init_external_interrupts(void);
 
+void main(void)
+{
+	init_LEDS();
+	init_switches();
+	init_LCD();
+	init_external_interrupts();
+
+
+	uint8_t count = 0;
+	while(count<=256)
+	{
+		if((presscount%2)!=0)
+		{	lcd_command(DISPLAY_ON);
+			if ((GPIOA->IDR & GPIO_IDR_1) == 0)
+			{
+				++count;
+			}
+			if ((GPIOA->IDR & GPIO_IDR_2) == 0)
+			{
+				--count;
+			}
+			display_on_LEDS(count);
+			display_on_LCD(count);
+		}
+		else
+		{
+			count=0;
+			lcd_command(DISPLAY_OFF);
+			lcd_command(CLEAR);
+			display_on_LEDS(count);
+			delay(25000);
+
+		}
+
+	}
+}
+
 
 void display_on_LCD(uint8_t i){
 
